@@ -66,7 +66,7 @@ export function InterviewRunner({ mode, context, topic, maxQuestions = 6 }: { mo
     try {
       const s = await summarise({ data: { mode, history: history(t) } });
       const { data: row } = await supabase.from("interviews").insert({ mode, topic, context: { context: context.slice(0, 4000) } as never, status: "completed", overall_score: s.overall, scores: s.scores as never, summary: s as never }).select("id").single();
-      if (row) await supabase.from("interview_answers").insert(t.map((x) => ({ interview_id: row.id, question: x.question, answer: x.answer, score: x.score, category: x.category, feedback: x.ev as never })) as never);
+      if (row) await supabase.from("interview_answers").insert(t.map((x) => ({ interview_id: row.id, question: x.question, answer: x.answer, score: x.score, category: x.category, evaluation: x.ev as never })) as never);
       if (s.questionsToRevise.length) await supabase.from("tasks").insert(s.recommendedTopics.slice(0, 3).map((r) => ({ title: `Revise: ${r}`, category: "interview", source: "interview" })));
       await notify(`Interview scored ${s.overall}/100`, "Weak topics were added to your heatmap.");
       setSummary(s); setQ(null);
