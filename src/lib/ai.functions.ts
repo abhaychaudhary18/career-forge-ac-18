@@ -27,7 +27,7 @@ export const analyzeResume = createServerFn({ method: "POST" })
         atsScore: safeScore(out["atsScore"]),
         keywordMatch: safeScore(out["keywordMatch"]),
         summary: String(out["summary"] ?? ""),
-        extracted: (out["extracted"] ?? {}) as Record<string, unknown>,
+        extracted: (out["extracted"] ?? {}) as Record<string, any>,
         missingKeywords: safeList(out["missingKeywords"]),
         missingSkills: safeList(out["missingSkills"]),
         formattingIssues: safeList(out["formattingIssues"]),

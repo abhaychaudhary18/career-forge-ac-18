@@ -49,7 +49,7 @@ export function useIntelligence() {
       const finishedInterviews = interviews.filter((i) => i["overall_score"] != null);
 
       const signals: ReadinessSignals = {
-        resume: resumes.length ? Number(resumes[0]["ats_score"]) : null,
+        resume: resumes.length ? Number(resumes[0]!["ats_score"]) : null,
         project: github.length ? avg(github.map((g) => Number(g["score"]))) : null,
         technical: skills.length ? avg(skills.map((s) => Number(s["score"]))) : null,
         coding: coding.length ? avg(coding.map((c) => Number(c["score"]))) : null,
@@ -62,7 +62,7 @@ export function useIntelligence() {
               }),
             )
           : null,
-        jobFit: jobs.length ? Number(jobs[0]["match_score"]) : null,
+        jobFit: jobs.length ? Number(jobs[0]!["match_score"]) : null,
       };
 
       return {
