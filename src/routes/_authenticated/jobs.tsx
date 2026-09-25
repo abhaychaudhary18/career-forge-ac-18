@@ -20,15 +20,23 @@ export const Route = createFileRoute("/_authenticated/jobs")({
 
 function JobsPage() {
   const run = useServerFn(fetchJobs);
-  const { data: profile } = useProfile();
+  const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: intel } = useIntelligence();
-  const [q, setQ] = useState("");
-  const [query, setQuery] = useState("");
+  const [q, setQ] = useState<string | null>(null);
+  const [query, setQuery] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const { data, isLoading, error } = useQuery({ queryKey: ["jobs", query, page], queryFn: () => run({ data: { query, page } }) });
+  const role = profile?.target_role ?? "";
+  const effective = query ?? role;
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["jobs", effective, page],
+    enabled: !profileLoading,
+    queryFn: () => run({ data: { query: effective, page } }),
+  });
 
   const verified = (intel?.skills ?? []).filter((s) => Number(s["score"]) >= 55).map((s) => String(s["skill"]));
-  const mine = [...new Set([...(profile?.skills ?? []), ...verified])].map((s) => s.toLowerCase());
+  const extracted = (intel?.resumes[0]?.["analysis"] as { extracted?: { skills?: unknown[] } } | undefined)?.extracted?.skills ?? [];
+  const cvSkills = extracted.filter((s): s is string => typeof s === "string");
+  const mine = [...new Set([...(profile?.skills ?? []), ...cvSkills, ...verified])].map((s) => s.toLowerCase());
   const ranked = (data ?? []).map((j) => {
     const tags = j.tags.length ? j.tags : [];
     const hay = `${j.title} ${j.description}`.toLowerCase();
@@ -45,11 +53,12 @@ function JobsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Live Job Matcher" description={mine.length ? "Live openings ranked by overlap with your skills." : "Add skills in your profile to get match percentages."} />
+      <PageHeader title="Live Job Matcher" description={mine.length ? `Live openings for "${effective || "all roles"}", ranked by overlap with your resume and verified skills.` : "Upload your resume or add skills in your profile to get match percentages."} />
       <div className="flex gap-2">
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter: react, backend, remote…" onKeyDown={(e) => e.key === "Enter" && (setQuery(q), setPage(1))} />
-        <Button onClick={() => { setQuery(q); setPage(1); }}>Search</Button>
+        <Input value={q ?? effective} onChange={(e) => setQ(e.target.value)} placeholder="Role or keywords: frontend developer, react, remote…" onKeyDown={(e) => e.key === "Enter" && (setQuery(q ?? effective), setPage(1))} />
+        <Button onClick={() => { setQuery(q ?? effective); setPage(1); }}>Search</Button>
       </div>
+      {mine.length > 0 && <p className="text-xs text-muted-foreground">Matching against {mine.length} skills from your resume and profile.</p>}
       {error && <p className="text-sm text-destructive">{errMsg(error)}</p>}
       {isLoading ? <div className="space-y-3">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-28" />)}</div> : (
         <div className="space-y-3">

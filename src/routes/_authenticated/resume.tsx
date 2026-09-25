@@ -50,7 +50,12 @@ function ResumePage() {
       const r = await run({ data: { text, targetRole: profile?.target_role ?? "Software Engineer" } });
       const { data: row } = await supabase.from("resumes").insert({ raw_text: text, file_name: fileName, parsed: r.extracted as never }).select("id").single();
       await supabase.from("resume_analyses").insert({ resume_id: row?.id ?? null, ats_score: r.atsScore, analysis: r as never });
-      await notify(`Resume scored ${r.atsScore}/100`, "Your readiness profile was updated.");
+      const cvSkills = Array.isArray(r.extracted?.["skills"]) ? (r.extracted["skills"] as unknown[]).filter((s): s is string => typeof s === "string") : [];
+      if (profile && cvSkills.length) {
+        const merged = [...new Set([...(profile.skills ?? []), ...cvSkills.map((s) => s.trim())])].slice(0, 60);
+        await supabase.from("profiles").update({ skills: merged }).eq("id", profile.id);
+      }
+      await notify(`Resume scored ${r.atsScore}/100`, "Your skills were saved and live jobs are now matched to your resume.");
       setResult(r);
       qc.invalidateQueries();
     } catch (e) {
