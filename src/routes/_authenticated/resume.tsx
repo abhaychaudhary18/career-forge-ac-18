@@ -33,12 +33,15 @@ function ResumePage() {
   const shown = result ?? ((intel?.resumes[0]?.["analysis"] as Result | undefined) ?? null);
 
   async function onFile(f: File) {
-    if (!/\.(txt|md)$/i.test(f.name)) {
-      toast.error("Please upload a .txt file, or paste your resume text below.");
-      return;
+    try {
+      const { extractResumeText } = await import("@/lib/resume-parse");
+      const t = await extractResumeText(f);
+      setFileName(f.name);
+      setText(t);
+      toast.success(`Read ${f.name}`);
+    } catch (e) {
+      toast.error(errMsg(e));
     }
-    setFileName(f.name);
-    setText(await f.text());
   }
 
   async function analyze() {
@@ -59,11 +62,11 @@ function ResumePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Resume & ATS Analyzer" description="Paste your resume or upload a text file to get an ATS score and concrete fixes." />
+      <PageHeader title="Resume & ATS Analyzer" description="Upload your resume (PDF, DOCX or TXT) or paste it to get an ATS score and concrete fixes." />
       <div className="surface-card space-y-3 p-5">
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-accent">
-          <Upload className="size-4" /> {fileName ?? "Upload .txt resume"}
-          <input type="file" accept=".txt,.md" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
+        <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground hover:border-accent hover:text-foreground">
+          <Upload className="size-4" /> {fileName ?? "Upload resume — PDF, DOCX or TXT"}
+          <input type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
         </label>
         <Textarea value={text} onChange={(e) => setText(e.target.value)} rows={10} placeholder="Paste your full resume text here (at least 50 characters)…" />
         <Button onClick={analyze} disabled={busy || text.trim().length < 50}>{busy ? "Analyzing…" : "Analyze resume"}</Button>

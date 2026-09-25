@@ -494,27 +494,43 @@ export const fetchJobs = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     try {
-      const url = new URL("https://www.arbeitnow.com/api/job-board-api");
-      url.searchParams.set("page", String(data.page));
-      const res = await fetch(url, { headers: { Accept: "application/json" } });
-      if (!res.ok) throw new Error("The job feed is unavailable right now. Please try again later.");
-      const json = (await res.json()) as {
-        data: {
-          slug: string;
-          title: string;
-          company_name: string;
-          location: string;
-          remote: boolean;
-          url: string;
-          tags: string[];
-          job_types: string[];
-          description: string;
-          created_at: number;
-        }[];
+      type Raw = {
+        slug: string;
+        title: string;
+        company_name: string;
+        location: string;
+        remote: boolean;
+        url: string;
+        tags: string[];
+        job_types: string[];
+        description: string;
+        created_at: number;
       };
-      const q = data.query.trim().toLowerCase();
+      // Pull 3 feed pages per view so role searches have enough live openings.
+      const start = (data.page - 1) * 3 + 1;
+      const pages = await Promise.all(
+        [start, start + 1, start + 2].map(async (p) => {
+          const url = new URL("https://www.arbeitnow.com/api/job-board-api");
+          url.searchParams.set("page", String(p));
+          const res = await fetch(url, { headers: { Accept: "application/json" } });
+          if (!res.ok) return [] as Raw[];
+          return ((await res.json()) as { data: Raw[] }).data ?? [];
+        }),
+      );
+      const all = pages.flat();
+      if (!all.length) throw new Error("The job feed is unavailable right now. Please try again later.");
+      const stop = new Set(["and", "the", "of", "for", "a", "an", "in", "to", "senior", "junior", "jr", "sr"]);
+      const tokens = data.query.toLowerCase().split(/[\s,/]+/).filter((t) => t.length > 1 && !stop.has(t));
+      const scored = all.map((j) => {
+        const title = j.title.toLowerCase();
+        const hay = `${title} ${j.tags.join(" ")} ${j.description.slice(0, 2000)}`.toLowerCase();
+        const s = tokens.reduce((n, t) => n + (title.includes(t) ? 3 : hay.includes(t) ? 1 : 0), 0);
+        return { j, s };
+      });
+      const json = {
+        data: (tokens.length ? scored.filter((x) => x.s > 0).sort((a, b) => b.s - a.s) : scored).map((x) => x.j),
+      };
       return json.data
-        .filter((j) => !q || `${j.title} ${j.company_name} ${j.tags.join(" ")}`.toLowerCase().includes(q))
         .slice(0, 40)
         .map((j) => ({
           slug: j.slug,
