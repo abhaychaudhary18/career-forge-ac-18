@@ -76,7 +76,7 @@ function Coding() {
         </div>
         <div className="overflow-hidden rounded-xl border border-border">
           <Suspense fallback={<Skeleton className="h-[420px]" />}>
-            <Editor height="420px" theme="vs-dark" language={lang} value={code} onChange={(v) => setCode(v ?? "")} options={{ minimap: { enabled: false }, fontSize: 13 }} />
+            <Editor height="420px" theme="light" language={lang} value={code} onChange={(v) => setCode(v ?? "")} options={{ minimap: { enabled: false }, fontSize: 13 }} />
           </Suspense>
         </div>
         <Button onClick={submit} disabled={busy || !code.trim()}>{busy ? "Judging…" : "Submit solution"}</Button>
