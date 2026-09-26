@@ -1,21 +1,14 @@
 # CareerForge AI — build roadmap
 
 ## Done
-- Lovable Cloud backend enabled, full schema + RLS
-- Email + Google sign-in enabled
+- Backend, schema, sign-in, all feature pages
+- Resume upload: PDF / DOCX / TXT
+- Live jobs matched to target role + resume skills
+- Profile, Settings, Admin, Reports, Resume Builder pages
 
 ## In progress
-- [ ] Design system + landing page
-- [ ] Auth page + protected app shell (sidebar nav)
-- [ ] Career Intelligence dashboard
-- [ ] AI service layer + server functions
-- [ ] Resume/ATS analyzer, Job analyzer, Resume builder
-- [ ] GitHub analyzer + Project defense
-- [ ] Adaptive interview (text + voice)
-- [ ] Skill verification, Coding assessment, DSA & CS
-- [ ] Roadmap generator, Tasks + AI study planner
-- [ ] Job matcher, Analytics + heatmap, Reports
-- [ ] Profile, Settings, Admin
+- [ ] Website-style layout: top navigation with menus, each feature its own page (no dashboard sidebar)
+- [ ] Brighter, decent light color scheme
 
 ## Not possible on this platform
 - Java/Spring Boot, MongoDB, Docker, GitHub Actions (replaced by Lovable Cloud + managed hosting)
