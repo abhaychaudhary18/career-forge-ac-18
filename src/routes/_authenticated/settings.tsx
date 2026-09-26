@@ -54,9 +54,9 @@ function SettingsPage() {
   }
 
   async function changePw() {
-    if (pw.length < 8) return toast.error("Use at least 8 characters.");
+    if (pw.length < 8) { toast.error("Use at least 8 characters."); return; }
     const { error } = await supabase.auth.updateUser({ password: pw });
-    if (error) return toast.error(errMsg(error));
+    if (error) { toast.error(errMsg(error)); return; }
     setPw("");
     toast.success("Password updated");
   }

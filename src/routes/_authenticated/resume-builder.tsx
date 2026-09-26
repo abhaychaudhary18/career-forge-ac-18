@@ -58,7 +58,7 @@ function BuilderPage() {
   }, [profile, doc.name]);
 
   async function improve(s: Sec) {
-    if (doc[s].trim().length < 3) return toast.error("Write something in this section first.");
+    if (doc[s].trim().length < 3) { toast.error("Write something in this section first."); return; }
     setBusy(s);
     try {
       const r = await run({ data: { section: s, content: doc[s], targetRole: profile?.target_role ?? "Software Engineer" } });
