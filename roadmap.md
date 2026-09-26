@@ -7,8 +7,8 @@
 - Profile, Settings, Admin, Reports, Resume Builder pages
 
 ## In progress
-- [ ] Website-style layout: top navigation with menus, each feature its own page (no dashboard sidebar)
-- [ ] Brighter, decent light color scheme
+- [x] Website-style layout: top navigation with menus, each feature its own page (no dashboard sidebar)
+- [x] Brighter, decent light color scheme
 
 ## Not possible on this platform
 - Java/Spring Boot, MongoDB, Docker, GitHub Actions (replaced by Lovable Cloud + managed hosting)
