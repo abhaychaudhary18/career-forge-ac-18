@@ -57,7 +57,7 @@ function ProfilePage() {
       .update({ ...rest, skills: skills.split(",").map((s) => s.trim()).filter(Boolean) })
       .eq("id", profile.id);
     setSaving(false);
-    if (error) return toast.error(errMsg(error));
+    if (error) { toast.error(errMsg(error)); return; }
     toast.success("Profile saved");
     qc.invalidateQueries();
   }
