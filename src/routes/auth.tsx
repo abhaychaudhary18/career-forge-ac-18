@@ -144,6 +144,10 @@ function AuthPage() {
           </p>
         </div>
       </div>
+      <p className="mt-8 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} CareerForge AI · Made by{" "}
+        <span className="font-semibold text-foreground">Abhay Chaudhary</span>
+      </p>
     </div>
   );
 }
