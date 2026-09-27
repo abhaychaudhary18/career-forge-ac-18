@@ -49,7 +49,7 @@ function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="page-glow flex min-h-screen flex-col bg-background">
       <TopBar open={open} onMenu={() => setOpen(!open)} pathname={pathname} />
       {open && (
         <div className="border-b border-border bg-card lg:hidden">
@@ -70,22 +70,22 @@ function AppLayout() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6">
         <Outlet />
       </main>
-      <footer className="border-t border-border bg-surface">
-        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 text-sm sm:grid-cols-3 sm:px-6 lg:grid-cols-7">
+      <footer className="bg-ink text-ink-foreground">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 text-sm sm:grid-cols-3 sm:px-6 lg:grid-cols-7">
           {NAV_GROUPS.map((g) => (
             <div key={g}>
-              <p className="mb-2 font-semibold">{groupLabel(g)}</p>
+              <p className="mb-2 font-semibold text-ink-foreground">{groupLabel(g)}</p>
               {NAV_ITEMS.filter((i) => i.group === g).map((i) => (
-                <Link key={i.to} to={i.to} className="block py-1 text-muted-foreground hover:text-primary">{i.label}</Link>
+                <Link key={i.to} to={i.to} className="block py-1 text-ink-foreground/60 hover:text-primary">{i.label}</Link>
               ))}
             </div>
           ))}
         </div>
-        <div className="border-t border-border/60">
-          <div className="mx-auto flex max-w-6xl flex-col items-center gap-1 px-4 py-5 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left sm:px-6">
+        <div className="border-t border-ink-foreground/10">
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-1 px-4 py-5 text-center text-xs text-ink-foreground/60 sm:flex-row sm:justify-between sm:text-left sm:px-6">
             <p>© {new Date().getFullYear()} CareerForge AI. All rights reserved.</p>
             <p>
-              Made by <span className="font-semibold text-foreground">Abhay Chaudhary</span>
+              Made by <span className="font-semibold text-ink-foreground">Abhay Chaudhary</span>
             </p>
           </div>
         </div>
@@ -111,17 +111,17 @@ function TopBar({ onMenu, open, pathname }: { onMenu: () => void; open: boolean;
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
-        <Link to="/dashboard" className="mr-2 shrink-0"><Logo /></Link>
-        <nav className="hidden items-center gap-0.5 lg:flex">
-          <Link to="/dashboard" className={cn("rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary", pathname === "/dashboard" && "text-primary")}>Home</Link>
+    <header className="sticky top-0 z-30 px-3 pt-3 sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2">
+        <Link to="/dashboard" className="shrink-0 rounded-full bg-card px-4 py-2 shadow-[var(--shadow-pill)]"><Logo /></Link>
+        <nav className="order-3 hidden w-full items-center justify-center gap-0.5 rounded-full bg-card p-1.5 shadow-[var(--shadow-pill)] lg:order-2 lg:flex lg:w-auto lg:flex-1">
+          <Link to="/dashboard" className={cn("rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground", pathname === "/dashboard" && "bg-ink text-ink-foreground hover:text-ink-foreground")}>Home</Link>
           {MENU_GROUPS.map((g) => {
             const items = NAV_ITEMS.filter((i) => i.group === g);
             const active = items.some((i) => i.to === pathname);
             return (
               <DropdownMenu key={g}>
-                <DropdownMenuTrigger className={cn("flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium outline-none hover:bg-secondary", active && "text-primary")}>
+                <DropdownMenuTrigger className={cn("flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground", active && "bg-ink text-ink-foreground hover:text-ink-foreground")}>
                   {groupLabel(g)} <ChevronDown className="size-3.5" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
@@ -135,9 +135,9 @@ function TopBar({ onMenu, open, pathname }: { onMenu: () => void; open: boolean;
             );
           })}
         </nav>
-        <div className="relative ml-auto hidden w-52 md:block">
+        <div className="relative order-2 ml-auto hidden w-44 md:block lg:order-3 lg:ml-0">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search pages…" className="pl-9" />
+          <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search" className="rounded-full border-0 bg-card pl-9 shadow-[var(--shadow-pill)]" />
           {matches.length > 0 && (
             <div className="absolute mt-2 w-full overflow-hidden rounded-xl border border-border bg-popover shadow-lg">
               {matches.map((m) => (
@@ -148,12 +148,12 @@ function TopBar({ onMenu, open, pathname }: { onMenu: () => void; open: boolean;
             </div>
           )}
         </div>
-        <div className="ml-auto flex items-center gap-1 md:ml-0">
+        <div className="order-2 ml-auto flex items-center gap-2 md:ml-0 lg:order-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
+              <Button variant="ghost" size="icon" className="relative rounded-full bg-card shadow-[var(--shadow-pill)]" aria-label="Notifications">
                 <Bell className="size-4" />
-                {unread > 0 && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-accent" />}
+                {unread > 0 && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-primary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
@@ -170,7 +170,7 @@ function TopBar({ onMenu, open, pathname }: { onMenu: () => void; open: boolean;
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="ghost" size="sm" className="gap-2 rounded-full bg-card shadow-[var(--shadow-pill)]">
                 <span className="grid size-5 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
                   {(profile?.name ?? "U").slice(0, 1).toUpperCase()}
                 </span>
@@ -185,7 +185,7 @@ function TopBar({ onMenu, open, pathname }: { onMenu: () => void; open: boolean;
               <DropdownMenuItem onClick={signOut}><LogOut className="mr-2 size-4" /> Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <button className="ml-1 lg:hidden" onClick={onMenu} aria-label="Open menu">
+          <button className="grid size-9 place-items-center rounded-full bg-card shadow-[var(--shadow-pill)] lg:hidden" onClick={onMenu} aria-label="Open menu">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
