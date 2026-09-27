@@ -81,7 +81,14 @@ function AppLayout() {
             </div>
           ))}
         </div>
-        <p className="pb-6 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} CareerForge AI</p>
+        <div className="border-t border-border/60">
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-1 px-4 py-5 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left sm:px-6">
+            <p>© {new Date().getFullYear()} CareerForge AI. All rights reserved.</p>
+            <p>
+              Made by <span className="font-semibold text-foreground">Abhay Chaudhary</span>
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );
