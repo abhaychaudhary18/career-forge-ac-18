@@ -322,6 +322,10 @@ function Landing() {
           <Logo />
           <p>© {new Date().getFullYear()} CareerForge AI. Turn Your Resume Into Career Readiness.</p>
         </div>
+        <p className="mx-auto mt-6 max-w-6xl px-4 text-center text-xs text-muted-foreground sm:text-left">
+          Made by{" "}
+          <span className="font-semibold text-foreground">Abhay Chaudhary</span>
+        </p>
       </footer>
     </div>
   );
