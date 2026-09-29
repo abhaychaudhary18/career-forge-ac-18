@@ -4,10 +4,6 @@ MASTER PROMPT — BUILD THE COMPLETE CAREER INTELLIGENCE PLATFORM
 
 You are an expert full-stack engineer, UI/UX designer, AI engineer, DevOps engineer, database architect, and product engineer.
 
-Build a complete production-quality web application inspired by the functionality and information architecture of:
-
-https://careerpilot.website/
-
 The application should provide a similar overall career-preparation experience, but it must be an ORIGINAL implementation with its own code, branding, assets, copy, and visual styling.
 
 Do NOT copy source code, proprietary assets, logos, exact text, or copyrighted design assets from CareerPilot.
